@@ -1,5 +1,8 @@
 package com.marsboy.microservices.primero.ExpensesService.Controller;
 
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
+import com.netflix.discovery.shared.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +16,14 @@ public class ExpensesServiceRestController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private EurekaClient eurekaClient;
+
     @GetMapping(value = "/myghost")
     public String getMyGhost(){
-        String url = "http://192.168.0.104:6000/ghost";
+        Application application = eurekaClient.getApplication("account-service");
+        InstanceInfo instanceInfo = application.getInstances().get(0);
+        String url = "http://"+instanceInfo.getIPAddr()+ ":"+instanceInfo.getPort()+"/"+"ghost";
         String temp = restTemplate.getForObject(url,String.class);
         temp = temp+" he told";
         return temp;
