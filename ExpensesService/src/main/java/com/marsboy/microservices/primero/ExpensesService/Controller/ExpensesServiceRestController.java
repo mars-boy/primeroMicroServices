@@ -3,6 +3,7 @@ package com.marsboy.microservices.primero.ExpensesService.Controller;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ public class ExpensesServiceRestController {
     @Autowired
     private EurekaClient eurekaClient;
 
+    @HystrixCommand(fallbackMethod = "getMyGhostFallBack")
     @GetMapping(value = "/myghost")
     public String getMyGhost(){
         Application application = eurekaClient.getApplication("account-service");
@@ -28,4 +30,11 @@ public class ExpensesServiceRestController {
         temp = temp+" he told";
         return temp;
     }
+
+    public String getMyGhostFallBack(){
+        return "ghost fallback";
+    }
+
+
+
 }
