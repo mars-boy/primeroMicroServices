@@ -26,9 +26,9 @@ public class ExpensesServiceRestController {
         Application application = eurekaClient.getApplication("account-service");
         InstanceInfo instanceInfo = application.getInstances().get(0);
         String url = "http://"+instanceInfo.getIPAddr()+ ":"+instanceInfo.getPort()+"/"+"ghost";
-        String temp = restTemplate.getForObject(url,String.class);
-        temp = temp+" he told";
-        return temp;
+        String restObject = restTemplate.getForObject(url,String.class);
+        restObject = restObject+" I repeat";
+        return restObject;
     }
 
     public String getMyGhostFallBack(){
